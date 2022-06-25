@@ -1,7 +1,6 @@
 use std::sync::Arc;
 use std::sync::Mutex;
-use std::ops::Deref;
-use std::ops::DerefMut;
+use std::ops::*;
 use std::mem::*;
 
 enum PerVec<T> {
@@ -49,7 +48,7 @@ impl<T> PerVecRef<T> {
         PerVecRef::from_inner(PerVec::Arr(t))
     }
 
-    pub fn reroot(&self, self_cell: &mut std::sync::MutexGuard<PerVec<T>>) {
+    fn reroot(&self, self_cell: &mut std::sync::MutexGuard<PerVec<T>>) {
         match self_cell.deref_mut() {
             PerVec::Arr(_) => {}
             PerVec::Diff(idx, val, t) => {
@@ -121,6 +120,10 @@ impl<T: Clone> PerVecRef<T> {
         let mut self_cell = self.0.lock().unwrap();
         self.reroot(&mut self_cell);
         self_cell.unsafe_get_arr().len()
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
     }
 
 }

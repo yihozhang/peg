@@ -1,8 +1,14 @@
-mod arr;
+pub mod arr;
 use arr::PerVecRef;
 
-struct PerUnionFind {
+pub struct PerUnionFind {
     parent: PerVecRef<usize>,
+}
+
+impl Default for PerUnionFind {
+    fn default() -> Self {
+        PerUnionFind::new()
+    }
 }
 
 impl PerUnionFind {
